@@ -12,12 +12,15 @@ class Server {
 private:
     const int address_family_ = AF_INET;
     const int clients_count_ = 1;
-
+    int sock_, client_, port_;
+    size_t buf_size_;
+    std::vector<char> buffer_;
+    sockaddr_in server_addr;
+    handler handler_;
 public:
-    Server(const int buffer_size, const int port) {
-        buf_size_ = buffer_size;
+    Server(const int buffer_size, const int port)
+        : buf_size_(buffer_size), port_(port) {
         buffer_.resize(buffer_size);
-        port_ = port;
     }
 
     ~Server() {
@@ -26,7 +29,7 @@ public:
 
     void socket_init() {
         sock_ = socket(address_family_, SOCK_STREAM, 0);
-        if (check_sock(sock_)) {
+        if (sock_ < 0) {
             std::cerr << "Can't create socket" << '\n';
             exit(1);
         }
@@ -36,12 +39,7 @@ public:
         server_addr.sin_family = address_family_;
         server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
         server_addr.sin_port = htons(port_);
-        sock_size = sizeof(server_addr);
-        return bind(sock_, reinterpret_cast<sockaddr*>(&server_addr), sock_size) < 0;
-    }
-
-    static bool check_sock(const int s) {
-        return s < 0;
+        return bind(sock_, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr)) < 0;
     }
 
     void start() {
@@ -52,7 +50,7 @@ public:
 
         while (true) {
             int n = 1;
-            client_ = accept(sock_, reinterpret_cast<sockaddr*>(nullptr), nullptr);
+            client_ = accept(sock_, nullptr, nullptr);
             std::cout << "new client or what i dunno: " << client_ << '\n';
             while ((n = read(client_, buffer_.data(), buf_size_) > 0)) {
                 handler_.handle_reponse(buffer_);
@@ -60,13 +58,6 @@ public:
             }
         }
     }
-
-    int sock_, client_, port_;
-    socklen_t sock_size;
-    size_t buf_size_;
-    std::vector<char> buffer_;
-    sockaddr_in server_addr;
-    handler handler_;
 };
 
 int main() {

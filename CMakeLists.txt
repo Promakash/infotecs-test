@@ -8,4 +8,4 @@ ADD_EXECUTABLE(server server/main.cpp
         server/handler.cpp
         server/handler.h)
 ADD_EXECUTABLE(client client/main.cpp
-        client/sender.h)
+        client/socketclient.h)

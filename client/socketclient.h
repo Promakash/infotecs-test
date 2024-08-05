@@ -6,21 +6,20 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <netdb.h>
 #include "unistd.h"
 
 class SocketClient {
 private:
     const int address_family_ = AF_INET;
-    bool active_connection_;
-    bool has_connected_;
     int sockfd_, port_;
     std::string ip_;
     sockaddr_in server_addr_;
+    bool active_connection_;
+    bool has_connected_;
 
 public:
     SocketClient(std::string &ip, const int port)
-        : ip_(std::move(ip)), port_(port), active_connection_(false), has_connected_(false), sockfd_(-1) {}
+        : sockfd_(-1), port_(port), ip_(std::move(ip)), active_connection_(false), has_connected_(false) {}
 
     ~SocketClient() {
         close(sockfd_);
