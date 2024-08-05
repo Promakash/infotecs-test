@@ -1,7 +1,7 @@
 #include "socketclient.h"
 
 SocketClient::SocketClient(std::string &ip, const int port)
-    : sockfd_(-1), port_(port), ip_(std::move(ip)), active_connection_(false), has_connected_(false) {
+    : sockfd_(-1), port_(port), ip_(std::move(ip)), active_connection_(false) {
 }
 
 SocketClient::~SocketClient() {
@@ -16,18 +16,15 @@ void SocketClient::setup_client() {
 void SocketClient::send_msg(std::string &msg) {
     if (!ensure_connection()) {
         std::cerr << "No connection with server - can't send message" << '\n';
-        if (has_connected_) {
-            sockfd_ = close(sockfd_);
-            has_connected_ = false;
-        }
         active_connection_ = false;
         return;
     }
 
     size_t res = write(sockfd_, msg.data(), msg.size());
-    if (res != msg.size()) {
+    if (res != msg.size() || check_error()) {
         std::cerr << "Error while sending message!" << '\n';
         active_connection_ = false;
+        sockfd_ = close(sockfd_);
     } else {
         std::cout << "Message has been sent successfully!" << '\n';
     }
@@ -49,10 +46,6 @@ void SocketClient::socket_init() {
 
 void SocketClient::connect_to_sock() {
     active_connection_ = connect(sockfd_, reinterpret_cast<sockaddr *>(&server_addr_), sizeof(server_addr_)) >= 0;
-    if (!active_connection_) {
-        return;
-    }
-    has_connected_ = true;
 }
 
 bool SocketClient::check_error() {
@@ -80,5 +73,5 @@ bool SocketClient::ensure_connection() {
             connect_to_sock();
         }
     }
-    return active_connection_ && !check_error();
+    return active_connection_;
 }

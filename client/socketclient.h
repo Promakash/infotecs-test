@@ -23,7 +23,7 @@ private:
     int sockfd_, port_;
     std::string ip_;
     sockaddr_in server_addr_;
-    bool active_connection_, has_connected_;
+    bool active_connection_;
 
     void socket_init();
 

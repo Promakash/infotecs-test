@@ -28,7 +28,7 @@ void StringProcessor::run_reader() {
 
 void StringProcessor::run_processor() {
     client_.setup_client();
-    for (;;) {
+    while (true) {
         std::unique_lock<std::mutex> lock(mut);
         std::string sended_str;
         while (buf_free && !buffer.empty()) {
