@@ -25,7 +25,6 @@ void SocketServer::start() {
     while (true) {
         int n = 1;
         client_ = accept(sock_, nullptr, nullptr);
-        std::cout << "new client or what i dunno: " << client_ << '\n';
         while ((n = read(client_, buffer_.data(), buf_size_) > 0)) {
             handler_.handle_reponse(buffer_, n);
             buffer_.clear();
