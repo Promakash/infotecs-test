@@ -23,8 +23,8 @@ private:
     int buf_size_;
     int sock_, client_, port_;
     std::vector<char> buffer_;
-    sockaddr_in server_addr;
-    handler handler_;
+    sockaddr_in server_addr_;
+    Handler handler_;
 
     bool socket_init();
 

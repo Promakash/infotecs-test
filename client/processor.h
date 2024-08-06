@@ -14,11 +14,11 @@ public:
     void Run();
 
 private:
-    std::mutex mut;
-    std::condition_variable buf_used;
-    bool buf_free;
-    std::string buffer;
-    Reader input_reader;
+    std::mutex mut_;
+    std::condition_variable buf_used_;
+    bool buf_free_;
+    std::string buffer_;
+    Reader input_reader_;
     SocketClient client_;
 
     unsigned sum_elements(const std::string &str) const;

@@ -25,11 +25,12 @@ void SocketServer::start() {
     while (true) {
         int n = 1;
         client_ = accept(sock_, nullptr, nullptr);
-        while ((n = read(client_, buffer_.data(), buf_size_) > 0)) {
+        std::cout << "client has connected" << '\n';
+        while ((n = read(client_, buffer_.data(), buf_size_)) > 0) {
             handler_.handle_reponse(buffer_, n);
-            buffer_.clear();
+            std::fill(buffer_.begin(), buffer_.end(), 0);
         }
-        std::cout << "has disconnected!" << '\n';
+        std::cout << "client has disconnected!" << '\n';
         close(client_);
     }
 }
@@ -54,10 +55,10 @@ bool SocketServer::socket_init() {
 }
 
 bool SocketServer::bind_socket() {
-    server_addr.sin_family = address_family_;
-    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    server_addr.sin_port = htons(port_);
-    if (bind(sock_, reinterpret_cast<sockaddr *>(&server_addr), sizeof(server_addr)) < 0) {
+    server_addr_.sin_family = address_family_;
+    server_addr_.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_addr_.sin_port = htons(port_);
+    if (bind(sock_, reinterpret_cast<sockaddr *>(&server_addr_), sizeof(server_addr_)) < 0) {
         std::cout << "can't bind socket!" << '\n';
         return false;
     }

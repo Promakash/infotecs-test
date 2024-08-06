@@ -1,10 +1,10 @@
 #include "reader.h"
 
 bool Reader::validate_str(const std::string &str) const {
-    if (str.size() > max_capacity) {
+    if (str.size() > max_capacity_) {
         return false;
     }
-    if (only_numbers) {
+    if (only_numbers_) {
         for (const auto &cur_char: str) {
             if (std::isdigit(static_cast<unsigned char>(cur_char)) == false) {
                 std::cerr << "Wrong input data!" << '\n';

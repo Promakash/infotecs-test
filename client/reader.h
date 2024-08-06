@@ -10,6 +10,6 @@ public:
     std::string process_str(std::string &str) const;
 
 private:
-    const int max_capacity = 64;
-    const bool only_numbers = true;
+    const int max_capacity_ = 64;
+    const bool only_numbers_ = true;
 };
